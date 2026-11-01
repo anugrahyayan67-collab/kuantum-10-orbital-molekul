@@ -14,7 +14,7 @@ Sumber: Atkins & de Paula, Levine (bab 13), Housecroft & Sharpe, CRC Handbook, N
 | mixing | B₂, C₂, N₂: pencampuran 2s–2p mendorong σ2p di atas π2p; B₂ paramagnetik (2 elektron di 2 orbital π); O₂, F₂ urutan normal | — | Housecroft |
 | period2 | Orde ikatan Li₂ 1, Be₂ 0, B₂ 1, C₂ 2, N₂ 3, O₂ 2, F₂ 1, Ne₂ 0 | — | Atkins |
 | period2 | N₂ 110 pm, ≈ 945 kJ/mol; O₂ 121 pm, ≈ 498 kJ/mol; F₂ 142 pm, ≈ 158 kJ/mol | 109,8 / 120,7 / 141,2 pm | CRC; CCCBDB |
-| ions | O₂⁺ orde 2,5, ≈ 112 pm; O₂⁻ (superoksida) 1,5, ≈ 133 pm; O₂²⁻ (peroksida) 1, ≈ 149 pm; spesies oksigen reaktif di sel | — | Housecroft |
+| ions | O₂⁺ (kation dioksigenil) orde 2,5, ≈ 112 pm; O₂⁻ (superoksida) 1,5, ≈ 133 pm; O₂²⁻ (peroksida) 1, ≈ 149 pm; spesies oksigen reaktif di sel | — | Housecroft |
 | hetero | Orbital atom lebih elektronegatif lebih rendah; MO terpolarisasi; CO 10 elektron valensi, isoelektronik N₂, orde 3; HOMO (σ, terutama di C) → CO berikatan ke Fe hemoglobin lewat C; afinitas ≈ 200–250× O₂ | — | Housecroft; Atkins |
 | frontier | HOMO/LUMO; orbital perbatasan; Nobel Kimia 1981 Fukui & Hoffmann | — | nobelprize.org |
 | pes | PES N₂ (He I, 21,22 eV): ≈ 15,6 (3σg ~ σ2p), ≈ 16,7 (1πu), ≈ 18,8 eV (2σu ~ σ*2s) | 15,58 / 16,69–16,93 / 18,75 eV | Turner dkk.; NIST |

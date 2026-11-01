@@ -52,7 +52,7 @@ export const Hetero: React.FC = () => {
   const sHand = slot(t, wordOf(3, 'terpusat') - 0.4, cue(4) + 0.2);
   // baris 4: heme
   const toHeme = ramp(t, cue(4) - 0.3, cue(4) + 0.9, EASE_IN_OUT);
-  const heme = ramp(t, wordOf(4, 'hemoglobin') - 0.5, wordOf(4, 'hemoglobin') + 0.5);
+  const heme = ramp(t, cue(4) + 0.2, cue(4) + 1.2);
   const dock = ramp(t, wordOf(4, 'melalui') - 0.3, wordOf(4, 'karbonnya') + 0.6, EASE_IN_OUT);
   const o2 = ramp(t, wordOf(4, 'jauh') - 0.6, wordOf(4, 'kuat') + 0.6, EASE_IN_OUT);
   const repel = ramp(t, wordOf(4, 'daripada') - 0.1, wordOf(4, 'oksigen') + 0.9, EASE_IN_OUT);

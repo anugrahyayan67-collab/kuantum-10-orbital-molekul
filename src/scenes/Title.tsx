@@ -2,7 +2,9 @@ import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import {EASE_IN_OUT, mix, rand, ramp} from '../anim';
 import {Glow, Stage} from '../components/primitives';
-import {H2Pair, VbDefs} from '../components/vbA';
+import {VbDefs} from '../components/vbA';
+import {SpinUD} from '../components/grupA';
+import {MoADefs, SpreadCloud} from '../components/moA';
 import {useScene} from '../SceneContext';
 import {C, FONT} from '../theme';
 
@@ -31,43 +33,96 @@ const sup = (s: number, v: string, col?: string) => (
   </tspan>
 );
 const FLOATS: ((s: number) => React.ReactNode)[] = [
+  () => <tspan fill={C.cyan}>σ</tspan>,
   (s) => (
     <>
-      <tspan fill={C.mint}>sp</tspan>
-      {sup(s, '3', C.mint)}
+      <tspan fill={C.pink}>π</tspan>
+      {sup(s, '*', C.pink)}
     </>
   ),
-  (s) => <tspan fill={C.cyan}>σ</tspan>,
+  () => (
+    <>
+      <tspan fill={C.cyan}>↑</tspan>
+      <tspan fill={C.cyan}>↑</tspan>
+    </>
+  ),
   (s) => (
     <>
-      <tspan fill={C.ink}>H</tspan>
+      <tspan fill={C.ink}>O</tspan>
       {sub(s, '2')}
     </>
   ),
   () => <tspan fill={C.amber}>π</tspan>,
-  () => <tspan fill={C.gold}>74 pm</tspan>,
   (s) => (
     <>
-      <tspan fill={C.mint}>sp</tspan>
-      {sup(s, '2', C.mint)}
-    </>
-  ),
-  () => <tspan fill={C.violet}>ψ = a(1)b(2) + b(1)a(2)</tspan>,
-  () => <tspan fill={C.mint}>109,5°</tspan>,
-  () => (
-    <>
-      <tspan fill={C.cyan}>↑</tspan>
-      <tspan fill={C.pink}>↓</tspan>
+      <tspan fill={C.red}>σ</tspan>
+      {sup(s, '*', C.red)}
     </>
   ),
   (s) => (
     <>
-      <tspan fill={C.red}>D</tspan>
-      {sub(s, 'e', C.red)}
-      <tspan fill={C.red}> ≈ 4,75 eV</tspan>
+      <tspan fill={C.violet}>ψ = c</tspan>
+      {sub(s, 'A', C.violet)}
+      <tspan fill={C.violet}>φ</tspan>
+      {sub(s, 'A', C.violet)}
+      <tspan fill={C.violet}> ± c</tspan>
+      {sub(s, 'B', C.violet)}
+      <tspan fill={C.violet}>φ</tspan>
+      {sub(s, 'B', C.violet)}
+    </>
+  ),
+  () => <tspan fill={C.gold}>HOMO</tspan>,
+  () => <tspan fill={C.mint}>LUMO</tspan>,
+  () => <tspan fill={C.gold}>orde ikatan = 2</tspan>,
+  (s) => (
+    <>
+      <tspan fill={C.ink}>N</tspan>
+      {sub(s, '2')}
     </>
   ),
 ];
+
+// Diagram MO samar di latar: tingkat orbital atom kiri/kanan, MO di tengah, penghubung putus-putus.
+const MO_LEVELS: {y: number; col: string; e: number}[] = [
+  {y: 250, col: C.red, e: 0},
+  {y: 330, col: C.pink, e: 1},
+  {y: 610, col: C.amber, e: 2},
+  {y: 690, col: C.cyan, e: 2},
+];
+const MoGhost: React.FC<{t: number; p: number}> = ({t, p}) => (
+  <g opacity={p}>
+    {[
+      [340, 520],
+      [1580, 520],
+    ].map(([x, y], k) => (
+      <g key={k}>
+        <line x1={x - 90} y1={y} x2={x + 90} y2={y} stroke={C.blue} strokeWidth={5} strokeLinecap="round" />
+        {MO_LEVELS.map((L, i) => (
+          <line
+            key={i}
+            x1={k ? x - 90 : x + 90}
+            y1={y}
+            x2={k ? 1230 : 690}
+            y2={L.y}
+            stroke={C.muted}
+            strokeWidth={2}
+            strokeDasharray="8 10"
+            strokeDashoffset={-t * 12}
+            opacity={0.6}
+          />
+        ))}
+      </g>
+    ))}
+    {MO_LEVELS.map((L, i) => (
+      <g key={i}>
+        <line x1={690} y1={L.y} x2={1230} y2={L.y} stroke={L.col} strokeWidth={5} strokeLinecap="round" />
+        {L.e === 1
+          ? [-1, 1].map((s) => <SpinUD key={s} x={960 + s * 150} y={L.y - 4 + 3 * Math.sin(t * 2.4 + s)} up len={50} width={4} />)
+          : null}
+      </g>
+    ))}
+  </g>
+);
 
 export const Title: React.FC = () => {
   const {t} = useScene();
@@ -81,9 +136,11 @@ export const Title: React.FC = () => {
       <Stage>
         <VbDefs />
         <Glow x={960} y={470} r={640} color="gold" opacity={0.12 * bg} />
-        {/* dua atom H yang mendekat di belakang judul, awannya menyatu */}
-        <g opacity={0.5 * bg}>
-          <H2Pair x1={mix(330, 885, meet)} x2={mix(1590, 1035, meet)} y={470} t={t} R={150} merge={ramp(t, 3.4, 4.6)} />
+        <MoADefs />
+        <MoGhost t={t} p={0.3 * bg} />
+        {/* awan elektron yang menyebar ke seluruh molekul di belakang judul */}
+        <g opacity={0.9 * bg}>
+          <SpreadCloud cx={960} cy={470} half={mix(80, 240, meet)} t={t} spread={ramp(t, 0.6, 4.6, EASE_IN_OUT)} R={mix(120, 230, meet)} />
         </g>
         <circle cx={960} cy={470} r={420 * flashP + 80} fill="url(#vbA-flash)" opacity={0.35 * Math.max(0, 1 - Math.abs(t - 4.0) / 1.2) * bg} />
         {FLOATS.map((f, i) => {

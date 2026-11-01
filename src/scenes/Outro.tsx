@@ -1,8 +1,9 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import {EASE_IN_OUT, cyc, rand, ramp} from '../anim';
-import {Atom, Glow, Stage} from '../components/primitives';
-import {HexIcon, POrb} from '../components/vbD';
+import {Glow, Stage} from '../components/primitives';
+import {MOStack, O2_MO} from '../components/moD';
+import {POrb, RichLabel, Spin} from '../components/vbD';
 import {useScene} from '../SceneContext';
 import {C, FONT} from '../theme';
 
@@ -30,39 +31,69 @@ export const Outro: React.FC = () => {
     <AbsoluteFill style={{opacity: out}}>
       <Stage>
         <Glow x={960} y={300} r={500} color="violet" opacity={0.15} />
-        {/* hiasan: dua atom H berjabat tangan + molekul/orbital melayang */}
+        {/* hiasan: diagram MO O₂ mini (π* ↑↑), awan orbital melayang */}
         <g opacity={waves}>
+          {/* kiri: diagram MO O₂ */}
+          <RichLabel x={185} y={112} parts={[['O'], ['2', 'sub']]} size={26} color={C.red} weight={700} />
+          <MOStack
+            x={170}
+            y={392}
+            levels={O2_MO}
+            scale={0.6}
+            w={74}
+            t={t}
+            size={18}
+            lit={(i) => (O2_MO[i].kind === 'piStar' ? 0.6 + 0.4 * Math.sin(t * 2.4) : 0)}
+          />
+          {/* tengah atas: dua elektron π* sejajar */}
+          {[-1, 1].map((s) => (
+            <g key={s}>
+              <line x1={960 + s * 34 - 22} y1={104} x2={960 + s * 34 + 22} y2={104} stroke={C.pink} strokeWidth={5} strokeLinecap="round" />
+              <line x1={960 + s * 34 - 22} y1={104} x2={960 + s * 34 + 22} y2={104} stroke={C.pink} strokeWidth={16} strokeOpacity={0.12 + 0.1 * Math.sin(t * 2)} strokeLinecap="round" />
+              <Spin x={960 + s * 34} y={82 + 3 * Math.sin(t * 2 + s)} up len={34} width={4} />
+            </g>
+          ))}
+          {/* kanan: awan σ ikatan + orbital π* */}
           {(() => {
-            const d = 46 + 4 * Math.sin(t * 1.6);
-            const pulse = 0.5 + 0.5 * Math.sin(t * 1.6 + Math.PI);
+            const pulse = 0.5 + 0.5 * Math.sin(t * 1.6);
+            const bob = 6 * Math.sin(t * 0.9);
             return (
               <g>
-                <ellipse cx={960} cy={92} rx={d + 40} ry={30} fill={C.cyan} opacity={0.12 + 0.08 * pulse} />
-                <ellipse cx={960} cy={92} rx={d * 0.6} ry={18} fill={C.cyan} opacity={0.25 + 0.15 * pulse} />
-                <Atom x={960 - d} y={92} el="H" r={20} label={null} glow={0.5} />
-                <Atom x={960 + d} y={92} el="H" r={20} label={null} glow={0.5} />
-                {[0, 1].map((k) => (
-                  <circle key={k} cx={960 + 22 * Math.cos(t * 2 + k * Math.PI)} cy={92 + 9 * Math.sin(t * 2 + k * Math.PI)} r={4.5} fill={C.cyan} />
-                ))}
+                <ellipse cx={1740} cy={190 + bob} rx={74} ry={34} fill={C.cyan} opacity={0.14 + 0.08 * pulse} />
+                <ellipse cx={1740} cy={190 + bob} rx={44} ry={22} fill={C.cyan} opacity={0.28 + 0.12 * pulse} />
+                <circle cx={1716} cy={190 + bob} r={5} fill="#fff" />
+                <circle cx={1764} cy={190 + bob} r={5} fill="#fff" />
+                <g transform={`rotate(${8 * Math.sin(t * 0.7)} 1740 ${330 - bob})`}>
+                  <POrb x={1714} y={330 - bob} L={44} w={15} />
+                  <POrb x={1766} y={330 - bob} L={44} w={15} ang={180} />
+                  <line x1={1740} y1={330 - bob - 56} x2={1740} y2={330 - bob + 56} stroke={C.red} strokeWidth={2} strokeDasharray="5 5" opacity={0.7} />
+                </g>
               </g>
             );
           })()}
           {Array.from({length: 14}, (_, k) => {
             const ph = ((t * (0.035 + 0.02 * rand(k)) + rand(k * 3.1)) % 1 + 1) % 1;
-            const bottom = k < 8;
-            const side = k % 2 ? 1 : -1;
-            const x = bottom ? 140 + ph * 1640 + 40 * rand(k * 5.1) : 960 + side * (560 + 300 * rand(k * 7.3));
-            const y = bottom ? 850 + 150 * rand(k * 7.3) + 12 * Math.sin(t * 0.7 + k) : 360 - ph * 220;
+            const x = 140 + ph * 1640 + 40 * rand(k * 5.1);
+            const y = 900 + 110 * rand(k * 7.3) + 12 * Math.sin(t * 0.7 + k);
             const op = 0.3 * cyc(ph);
             const kind = k % 3;
             const rot = t * 20 * (rand(k * 2.2) - 0.5);
             return (
               <g key={k} opacity={op} transform={`rotate(${rot} ${x} ${y})`}>
-                {kind === 0 ? <HexIcon x={x} y={y} r={30} mode="ring" width={3} /> : kind === 1 ? <POrb x={x} y={y} L={34} w={12} ang={rand(k) * 60 - 30} /> : (
+                {kind === 0 ? (
+                  <POrb x={x} y={y} L={30} w={11} ang={rand(k) * 60 - 30} />
+                ) : kind === 1 ? (
                   <g>
-                    <line x1={x - 22} y1={y} x2={x + 22} y2={y} stroke="#8b97b8" strokeWidth={5} />
-                    <circle cx={x - 22} cy={y} r={12} fill="#ff4d63" />
-                    <circle cx={x + 22} cy={y} r={12} fill="#ff4d63" />
+                    <ellipse cx={x} cy={y} rx={40} ry={18} fill={C.cyan} opacity={0.5} />
+                    <circle cx={x - 14} cy={y} r={4} fill="#fff" />
+                    <circle cx={x + 14} cy={y} r={4} fill="#fff" />
+                  </g>
+                ) : (
+                  <g>
+                    <line x1={x - 26} y1={y} x2={x + 26} y2={y} stroke={C.red} strokeWidth={4} strokeLinecap="round" />
+                    <line x1={x - 26} y1={y + 34} x2={x + 26} y2={y + 34} stroke={C.cyan} strokeWidth={4} strokeLinecap="round" />
+                    <Spin x={x - 7} y={y + 20} up len={24} width={3} />
+                    <Spin x={x + 7} y={y + 20} up={false} len={24} width={3} />
                   </g>
                 )}
               </g>

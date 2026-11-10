@@ -1,0 +1,1 @@
+# kuantum-10-orbital-molekul
